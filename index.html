@@ -12,17 +12,41 @@
    width:100px;
     height:100px;
   }
+  .searchButton {
+    background-color: pink;
+    width: 60px;
+    height: 30px; 
+    
+  }
+  .title {
+  color: hotpink;
+  }
+
+  .mealName{
+    width: 50%;
+   background-color: pink;
+    font-size: 10px;
+    color: white;
+    
+  }
+
+  .ingredientsList{
+    position:absolute;
+    
+  }
+  
 </style>
 </head>
 
 <body>
    <div class = "container">
-    <div class = "meal-wrapper">
-  <div class = "meal-search">
+    <div class = "mealThingy">
+  <div class = "mealSearch">
         <h2 class = "title">search to add ingredients</h2>
-   <div class = "meal-search-box">
-          <input type = "text" class = "search-control" placeholder="Enter an ingredient" id = "search-input">
-          <button type = "submit" class = "search-btn btn" id = "search-btn">
+   <div class = "mealSearchBox">
+          <input type = "text" class = "searchControl" placeholder="Enter an ingredient" id = "ingredientInput">
+     <input type = "date" class = "searchControl" placeholder="Enter a date" id = "dateInput ">
+          <button type = "submit" class = "searchButton button" id = "searchButton">
            add
           </button>
         </div>
@@ -30,16 +54,18 @@
       <div >
         <h5 id="ingredients"></h5>
       </div>
-      <div class = "meal-result">
+      <div class = "mealResult">
         <h2 class = "title">results</h2>
         <div id= "meal">
         </div>
       </div>
       
+  <div class: "ingredientsList">
   
+  </div>
   <script >
-   
-    const searchBtn = document.getElementById('search-btn');
+   //assigns the button to a variable 
+    const searchBtn = document.getElementById('searchButton');
     const mealList = document.getElementById('meal');
    
     //waits for the add ingredients button to be clicked and calls the function to find the meals with that function 
@@ -47,8 +73,10 @@
     searchBtn.addEventListener('click', getMealList,addIngredient);
   
     function getMealList(){
-    let searchInputTxt = document.getElementById('search-input').value.trim();
-     
+  //retrieves the string of text from the user input and removes the whitespace from it so it can be used in the uri request 
+      let searchInputTxt = document.getElementById('ingredientInput').value.trim();
+   //uses fetch to get all the meals with the ingredient inputed  
+      //then converts it into json and selects the meal name and img url for each meal.
     fetch(`https://www.themealdb.com/api/json/v1/1/filter.php?i=${searchInputTxt}`)
     .then(response => response.json())
     .then(data => {
@@ -57,32 +85,32 @@
             data.meals.forEach(meal => {
                console.log(data.meals)
               html += `
-                    <div class = "meal-item" data-id = "${meal.idMeal}">
+                    <div class = "mealItem" data-id = "${meal.idMeal}">
                         <div >
                             <img class = "mealPicture" src = "${meal.strMealThumb}" alt = "food">
                         </div>
-                        <div class = "meal-name">
+                        <div class = "mealName">
                             <h3>${meal.strMeal}</h3>
                             <!--- <a href = "#" class = "recipe-btn">Get Recipe</a> -->
                         </div>
                     </div>
                 `;
             });
-            mealList.classList.remove('notFound');
+ //if there arent any meals found it returns that there are no results.
+   mealList.classList.remove('notFound');
         } else{
-            html = "Sorry, we didn't find any meal!";
+            html = "There are no results 💔";
             mealList.classList.add('notFound');
         }
 
         mealList.innerHTML = html;
     });
 }
-    function addIngredient() {
-    
+    // retreives the inputed string and saves it as the list of ingredients the user has
+    function addIngredient() { 
       document.getElementById("ingredients").innerHTML = searchInputTxt;
     }
   </script>
 </body>
 
 </html>
- 
